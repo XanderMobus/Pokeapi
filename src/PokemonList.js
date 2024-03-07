@@ -4,6 +4,7 @@ import PokemonGrid from './PokemonGrid';
 
 const PokemonList = () => {
   const [pokemonData, setPokemonData] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,7 +17,32 @@ const PokemonList = () => {
     fetchData();
   }, []);
 
-  return <PokemonGrid pokemonData={pokemonData} />;
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchChange(e);
+    }
+  };
+
+  const filteredPokemon = searchText === '' ? pokemonData : pokemonData.filter((pokemon) =>
+    pokemon.name.toLowerCase() === searchText.toLowerCase()
+  );
+
+  return (
+    <div className="App">
+      <input
+        type="text"
+        placeholder="Search pokémon"
+        value={searchText}
+        onChange={handleSearchChange}
+        onKeyDown={handleKeyDown}
+      />
+      <PokemonGrid pokemonData={filteredPokemon} />
+    </div>
+  );
 };
 
 export default PokemonList;
